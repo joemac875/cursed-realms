@@ -1,6 +1,11 @@
 #ifndef TOOLTIP_H
 #define TOOLTIP_H
-
+#include <curses.h>
+#include <vector>
+#include <chrono>
+#include "FastNoise.h"
+#include "terrain.h"
+#include "settings.h"
 class ToolTip
 {
   public:

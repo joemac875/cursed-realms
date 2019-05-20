@@ -1,4 +1,3 @@
-#include "map.h"
 #include "manager.h"
 
 void Map::shift(int direction){
@@ -33,12 +32,22 @@ Map::Map(){
 }
 void Map::dumpRenders(vector<vector<chtype> > &storage){
   terrainManager.dumpRenders(storage, y_curs_off, x_curs_off);
+  buildingManager.dumpRenders(storage, y_curs_off, x_curs_off);
 }
 void Map::stepAll(){
   terrainManager.stepAll();
+  
 }
 const char * Map::getToolText(int y,int x){
   y += y_curs_off;
   x += x_curs_off;
-  return terrainManager.getToolText(y,x);
+  const char * str;
+  if ((str = buildingManager.getToolText(y,x)) != 0){
+
+  }
+  else {
+  str = terrainManager.getToolText(y,x);
+  }
+
+  return str;
 }

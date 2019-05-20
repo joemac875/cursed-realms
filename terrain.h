@@ -4,8 +4,7 @@
 #include <curses.h>
 #include <vector>
 #include <time.h>
-#define MAP_WIDTH  40
-#define MAP_HEIGHT 30
+#include "settings.h"
 /* used to use the same noise generator to
    get different values at the "same" spot */
 #define NOISE_GEN_OFFSET 9000

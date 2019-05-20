@@ -4,7 +4,7 @@
 #include <chrono>
 #include <unistd.h>
 #include <stdlib.h>
-
+#include "building.h"
 #include "FastNoise.h"
 #include "terrain.h"
 
@@ -20,6 +20,7 @@ class Map
 
   private:
     TerrainManager terrainManager;
+    BuildingManager buildingManager;
     int x_curs_off;
     int y_curs_off;
 };

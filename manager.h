@@ -2,8 +2,8 @@
 #define MANAGER_H
 #include "toolTip.h"
 #include "map.h"
-#define GAME_WIDTH 25
-#define GAME_HEIGHT 15
+#include "settings.h"
+#include "resource.h"
 // millis that a step takes
 #define TURN_TIME 1500
 using namespace std;
@@ -39,6 +39,7 @@ class Manager
     int cursor_y;
     ToolTip toolTip;
     Map map;
+    ResourceManager resourceManager;
 };
 
 #endif

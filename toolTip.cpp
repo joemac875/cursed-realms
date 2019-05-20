@@ -1,8 +1,4 @@
-#include <curses.h>
-#include <vector>
-#include <chrono>
-#include "fastNoise.h"
-#include "terrain.h"
+
 #include "toolTip.h"
 ToolTip::ToolTip(int height, int width, int start_y, int start_x){
   toolTipWindow = newwin(height, width, start_y, start_x);
