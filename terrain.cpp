@@ -1,4 +1,8 @@
 #include "terrain.h"
+
+
+vector<vector<TerrainTile*> > TerrainManager::tileVector;
+
 TerrainManager::TerrainManager(){
   noiseGen.SetNoiseType(FastNoise::Simplex);
   noiseGen.SetFrequency(.125);
@@ -70,7 +74,15 @@ void TerrainManager::stepAll(){
     }
   }
 }
-
+vector<TerrainTile*> TerrainManager::getNeighbors(int y, int x){
+  vector<TerrainTile*> neighbors;
+  for (int i = -1; i < 2; i++){
+    for (int j = -1; j < 2; j++){
+      if ((i != 0) || (j != 0)) neighbors.push_back(tileVector[i][j]);
+    }
+  }
+  return neighbors;
+}
 const char * TerrainManager::getToolText(int y, int x){
   return tileVector[y][x]->getToolText();
 }
@@ -80,6 +92,9 @@ chtype TerrainTile::render(){
 }
 
 TerrainTile::~TerrainTile(){
+}
+int TerrainTile::getUsability(){
+  return usability;
 }
 
 void TerrainTile::setCharacter(chtype target){
@@ -108,9 +123,11 @@ void ForestTile::step(){
   return;
 }
 ForestTile::ForestTile(){
+  usability = ResourceManager::WOOD;
   setText("Forest\n----\nLush trees veil the ultimate resource.");
   setCharacter(ACS_DIAMOND | COLOR_PAIR(1));
 }
+
 void RiverTile::step(){
   return;
 }

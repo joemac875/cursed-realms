@@ -18,7 +18,8 @@ class Map
     void shift(int direction);
     const char * getToolText(int y,int x);
 
-  private:
+
+  protected:
     TerrainManager terrainManager;
     BuildingManager buildingManager;
     int x_curs_off;

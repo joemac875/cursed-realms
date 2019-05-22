@@ -5,6 +5,7 @@
 #include <vector>
 #include <time.h>
 #include "settings.h"
+#include "resource.h"
 /* used to use the same noise generator to
    get different values at the "same" spot */
 #define NOISE_GEN_OFFSET 9000
@@ -22,9 +23,12 @@ class TerrainManager
     void createRivers(int chunkSize);
     void fillRiver(int y, int x);
     const char * getToolText(int y, int x);
+    // returns the neighbors of a tile
+    vector<TerrainTile*> getNeighbors(int y, int x);
+    static vector<vector<TerrainTile*> > tileVector;
+
 
   private:
-    vector<vector<TerrainTile*> > tileVector;
     FastNoise noiseGen;
 
 
@@ -34,6 +38,7 @@ class TerrainManager
 class TerrainTile
 {
   public:
+
     chtype render();
     void setCharacter(chtype target);
     void setHeight(double target);
@@ -42,10 +47,13 @@ class TerrainTile
     double getHeight() const;
     virtual void step() = 0;
     virtual ~TerrainTile();
+    // Returns the usability of the
+    int getUsability();
   protected:
     chtype character;
     double height;
     const char * text;
+    int usability = 0;
 };
 class PlainsTile: public TerrainTile
 {
