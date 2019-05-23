@@ -11,8 +11,9 @@ ToolTip::ToolTip(){
 
 }
 
-void ToolTip::refresh(const char *str){
+void ToolTip::refresh(string str){
   werase(toolTipWindow);
-  mvwaddstr(toolTipWindow, 0, 0, str);
+
+  mvwaddstr(toolTipWindow, 0, 0, str.c_str());
   wrefresh(toolTipWindow);
 }

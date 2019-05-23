@@ -4,9 +4,9 @@
 #include <chrono>
 #include <unistd.h>
 #include <stdlib.h>
-#include "building.h"
+
 #include "FastNoise.h"
-#include "terrain.h"
+#include "tile.h"
 
 
 class Map
@@ -16,12 +16,9 @@ class Map
     void dumpRenders(vector<vector<chtype> > &storage);
     void stepAll();
     void shift(int direction);
-    const char * getToolText(int y,int x);
-
-
+    string getToolText(int y,int x);
   protected:
-    TerrainManager terrainManager;
-    BuildingManager buildingManager;
+    TileManager terrainManager;
     int x_curs_off;
     int y_curs_off;
 };

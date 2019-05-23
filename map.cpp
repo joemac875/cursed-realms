@@ -25,31 +25,25 @@ void Map::shift(int direction){
   }
 }
 Map::Map(){
-  terrainManager = TerrainManager();
+  terrainManager = TileManager();
   vector<TerrainTile*> x;
-  buildingManager.addBuilding <LumberMill> (4,5);
   // Randomly pick a starting area in the map
   y_curs_off = rand() % (MAP_HEIGHT-GAME_HEIGHT);
   x_curs_off = rand() % (MAP_WIDTH-GAME_WIDTH);
 }
 void Map::dumpRenders(vector<vector<chtype> > &storage){
   terrainManager.dumpRenders(storage, y_curs_off, x_curs_off);
-  buildingManager.dumpRenders(storage, y_curs_off, x_curs_off);
 }
 void Map::stepAll(){
   terrainManager.stepAll();
-  buildingManager.stepAll();
 }
-const char * Map::getToolText(int y,int x){
+string Map::getToolText(int y,int x){
   y += y_curs_off;
   x += x_curs_off;
-  const char * str;
-  /*if ((str = buildingManager.getToolText(y,x)) != 0){
+  string str;
 
-  }
-  else {
   str = terrainManager.getToolText(y,x);
-  }
+
 
   return str;
 }

@@ -4,16 +4,18 @@
 #include <vector>
 #include <chrono>
 #include "FastNoise.h"
-#include "terrain.h"
+#include <string>
 #include "settings.h"
+using namespace std;
 class ToolTip
 {
   public:
     ToolTip();
     ToolTip(int start_y, int start_x, int width, int height);
-    void refresh(const char *str);
+    void refresh(string str);
   private:
     WINDOW * toolTipWindow;
+
 };
 
 #endif
