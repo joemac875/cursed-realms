@@ -20,7 +20,7 @@ TileManager::TileManager(){
     tileVector.push_back(temp);
   }
   createRivers(10);
-  addBuilding <LumberMill> (5,5);
+  create(BT_LumberMill,2,2);
 }
 void TileManager::createRivers(int chunkSize){
   // go through in chunks of
@@ -122,7 +122,7 @@ int TerrainTile::getUsability(){
 }
 chtype TerrainTile::render(){
   if (building == nullptr){
-    return building->blob();
+    return character;;
   };
   return building->render();
 }
@@ -135,6 +135,7 @@ string TerrainTile::getToolText()  {
 void TerrainTile::setBuilding(BuildingTile * tile){
   building = tile;
 }
+
 void TerrainTile::step(){
   if (building == nullptr){
     return;
@@ -147,8 +148,6 @@ PlainsTile::PlainsTile(int y, int x) : TerrainTile(y, x){
   setText("Plains\n----\nA wholly uninspiring terrain tile.");
   setCharacter(' ');
 }
-
-
 ForestTile::ForestTile(int y, int x) : TerrainTile(y, x){
   usability = ResourceManager::WOOD;
   setText("Forest\n----\nLush trees veil the ultimate resource.");
@@ -164,6 +163,11 @@ RiverTile::RiverTile(int y, int x) : TerrainTile(y, x){
 BuildingTile::BuildingTile(int y, int x){
   setY(y);
   setX(x);
+}
+void TileManager::create(BuildingType bt, int y, int x){
+  if (bt == BT_LumberMill){
+    tileVector[y][x]->setBuilding(new LumberMill(y, x));
+  } 
 }
  chtype BuildingTile::blob(){
   return '7';

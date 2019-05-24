@@ -24,7 +24,6 @@ class Tile
 {
   public:
     Tile();
-
     virtual chtype render();
     void setCharacter(chtype target);
     virtual string getToolText();
@@ -60,6 +59,8 @@ class TerrainTile: public Tile
     BuildingTile * building = nullptr;
 
 };
+
+enum BuildingType {BT_LumberMill};
 class BuildingTile: public Tile
 {
   public:
@@ -119,7 +120,8 @@ class TileManager
     void createRivers(int chunkSize);
     void fillRiver(int y, int x);
     string getToolText(int y, int x);
-
+    
+    static void create(BuildingType bt, int y, int x);
     static vector<vector<TerrainTile* > > tileVector;
 
   private:
