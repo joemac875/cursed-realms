@@ -120,10 +120,9 @@ TerrainTile::TerrainTile(int y, int x){
 int TerrainTile::getUsability(){
   return usability;
 }
-
 chtype TerrainTile::render(){
   if (building == nullptr){
-    return character;
+    return building->blob();
   };
   return building->render();
 }
@@ -165,8 +164,10 @@ RiverTile::RiverTile(int y, int x) : TerrainTile(y, x){
 BuildingTile::BuildingTile(int y, int x){
   setY(y);
   setX(x);
-};
-
+}
+ chtype BuildingTile::blob(){
+  return '7';
+}
 ////////////
 LumberMill::LumberMill(int y, int x) : BuildingTile(y, x){
   setText("Lumber Mill\n----\nOwee this makes wood.");

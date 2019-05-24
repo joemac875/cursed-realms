@@ -1,44 +1,37 @@
 #include <iostream>
-using namespace std;
-class A;
-class B;
-class C;
-class D;
-class D
-{
-public:
-  void speak(){ cout <<"hello"<<endl;};
-  void broken(int * y){*y =5;};
-};
-class B
-{
-public:
-  D* getSpeaker(){ return &myD;};
-  void broken(int * y){myD.broken(y);};
-private:
-  D myD;
-};
-class C
-{
-public:
-  void speak(B * myB){
-    myB->getSpeaker()->speak();
-  };
-};
-class A
-{
-  public:
-    void broken(int * y){myB.broken(y);};
-    void speak(){ myC.speak(&myB);};
 
-  private:
-    B myB;
-    C myC;
+struct Window{
+    void show() {
+        std::cout << "Window\n";
+    }
+    //stuff
+}w1, w2, w3;
 
-};
+struct Widget{
+    void show() {
+        std::cout << "Widget\n";
+    }
+    //stuff
+}w4, w5, w6;
 
-int main(){
-  int * x;
-  A().broken(x);
-  return 0;
+struct Toolbar{
+    void show()
+    {
+        std::cout << "Toolbar\n";
+    }
+    //stuff
+}t1, t2, t3;
+
+
+template<class...Objects>
+void call_show(Objects&&...objects)
+{
+    using expand = int[];
+    (void) expand { 0, ((void)objects.show(), 0)... };
+}
+
+auto main() -> int
+{
+    call_show(w3, w4, w5, t1);
+    return 0;
 }

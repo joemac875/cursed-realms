@@ -64,6 +64,7 @@ class BuildingTile: public Tile
 {
   public:
     BuildingTile(int y, int x);
+    static chtype blob();
   protected:
     int buildTime = 0;
 
@@ -99,6 +100,7 @@ class LumberMill: public BuildingTile
     string getToolText() ;
     virtual void step();
     void setProduction(int target);
+
   private:
     int production;
 
@@ -121,7 +123,7 @@ class TileManager
     static vector<vector<TerrainTile* > > tileVector;
 
   private:
-
+    vector<double (*)(double, double)> x;
     FastNoise noiseGen;
     double baseRiverProb = 3;
 };

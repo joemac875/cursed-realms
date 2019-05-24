@@ -4,7 +4,6 @@
 #include <chrono>
 #include <unistd.h>
 #include <stdlib.h>
-
 #include "FastNoise.h"
 #include "tile.h"
 
