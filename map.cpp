@@ -41,9 +41,6 @@ string Map::getToolText(int y,int x){
   y += y_curs_off;
   x += x_curs_off;
   string str;
-
   str = terrainManager.getToolText(y,x);
-
-
   return str;
 }

@@ -60,7 +60,12 @@ class TerrainTile: public Tile
 
 };
 
-enum BuildingType {BT_LumberMill};
+enum BuildingType {BT_LumberMill = 1,
+                   BT_Farm = 2};
+
+inline BuildingType operator|(BuildingType A, BuildingType B){
+  return static_cast<BuildingType>(static_cast<int>(A) | static_cast<int>(B));
+}
 class BuildingTile: public Tile
 {
   public:
@@ -114,9 +119,6 @@ class TileManager
     TileManager();
     void stepAll();
     void dumpRenders(vector<vector<chtype> > &storage, int y_offset, int x_offset);
-    template <class buildingType> void addBuilding(int y, int x){
-      tileVector[y][x]->setBuilding(new buildingType(y, x));
-    }
     void createRivers(int chunkSize);
     void fillRiver(int y, int x);
     string getToolText(int y, int x);

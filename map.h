@@ -16,6 +16,7 @@ class Map
     void stepAll();
     void shift(int direction);
     string getToolText(int y,int x);
+    vector<string> getOptions();
   protected:
     TileManager terrainManager;
     int x_curs_off;
