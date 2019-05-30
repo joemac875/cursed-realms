@@ -10,13 +10,16 @@ class ResourceManager
     ResourceManager(int height, int width, int start_y, int start_x);
     void render();
     void step();
-
-    static void addWood(int amount);
+    void refresh();
     static int currentWood;
+    static int currentFamily;
+    static int currentFood;
+    static int currentAttrition;
     // The bit masks for the different resources
     static int const WOOD = 1;
-    static int const ANOTHER_RESOURCE = 1<<1;
-    static int const ANOTHER_RESOURCE_AGAIN = 1<<2;
+    static int const FAMILY = 2;
+    static int const FOOD = 4;
+
   private:
     WINDOW * resourceWindow;
 

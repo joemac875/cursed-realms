@@ -3,9 +3,9 @@
 #include "toolTip.h"
 #include "map.h"
 #include "settings.h"
+#include "option.h"
 #include "resource.h"
-// millis that a step takes
-#define TURN_TIME 1500
+
 using namespace std;
 class Manager
 {
@@ -39,6 +39,7 @@ class Manager
     int cursor_y;
     ToolTip toolTip;
     Map map;
+    OptionManager optionManager;
     ResourceManager resourceManager;
 };
 

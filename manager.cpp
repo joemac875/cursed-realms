@@ -7,14 +7,18 @@
 
 Manager::Manager(){
   start = chrono::steady_clock::now();
-  map = Map();
+
+
+
   refresh();
-  WINDOW * titleWindow = newwin(2, GAME_WIDTH, 0, 0);
+  WINDOW * titleWindow = newwin(1, GAME_WIDTH, 0, 0);
   waddstr(titleWindow, "Cursed Realms v0.1");
   wrefresh(titleWindow);
-  mainWindow = newwin(GAME_HEIGHT, GAME_WIDTH, 2, 0);
-  toolTip = ToolTip(GAME_HEIGHT/2, 30, 1,GAME_WIDTH+2);
-  resourceManager = ResourceManager(GAME_HEIGHT/2, 30, 1+GAME_HEIGHT/2,GAME_WIDTH+2);
+  mainWindow = newwin(GAME_HEIGHT, GAME_WIDTH, 1, 0);
+  toolTip = ToolTip(TOOLTIP_HEIGHT, 45, 1,GAME_WIDTH+2);
+  resourceManager = ResourceManager(RESOURCES_HEIGHT, 45, 1+TOOLTIP_HEIGHT,GAME_WIDTH+2);
+  TileManager interimTM = map.getTileManager();
+  optionManager = OptionManager(interimTM, OPTIONS_HEIGHT, 45, 1+RESOURCES_HEIGHT+TOOLTIP_HEIGHT,GAME_WIDTH+2);
   keypad(mainWindow, TRUE);
   for (int i = 0; i < GAME_HEIGHT; i++){
     vector<chtype> temp(GAME_WIDTH);
@@ -23,12 +27,17 @@ Manager::Manager(){
     }
     charStorage.push_back(temp);
   }
-
 }
 void Manager::step(){
-  //getyx(mainWindow, cursor_y, cursor_x);
+  getyx(mainWindow, cursor_y, cursor_x);
+
   map.stepAll();
+  toolTip.refresh(map.getToolText(cursor_y,cursor_x));
   resourceManager.step();
+  BuildingType buildOptions = map.getAcceptedBuildings(cursor_y, cursor_x);
+
+  optionManager.showOptions(buildOptions, cursor_y+map.get_y_curs_off(), cursor_x+map.get_x_curs_off());
+
   wrefresh(mainWindow);
 }
 void Manager::render(){
@@ -47,7 +56,9 @@ void Manager::cursorMovement(){
   int ch = getch();
   if (ch == ERR) return;
 
+
   int x,y;
+  int indexChoice = -1;
   getyx(mainWindow, y, x);
   switch(ch){
 
@@ -66,11 +77,32 @@ void Manager::cursorMovement(){
     case 'd':
       if (x==GAME_WIDTH-1) map.shift(1);
       wmove(mainWindow, y, x+1);
+
+      break;
+    case '1':
+      indexChoice = 0;
+      break;
+    case '2':
+      indexChoice = 1;
+      break;
+    case '3':
+      indexChoice = 2;
+      break;
+    case '4':
+      indexChoice = 3;
       break;
     default:
       break;
   }
+
   getyx(mainWindow, y, x);
+
+  if (indexChoice != -1){
+    optionManager.chooseOption(indexChoice, cursor_y+map.get_y_curs_off(), cursor_x+map.get_x_curs_off());
+  }
+  BuildingType buildOptions = map.getAcceptedBuildings(y, x);
+  optionManager.showOptions(buildOptions, y+map.get_y_curs_off(), x + map.get_x_curs_off());
+  resourceManager.refresh();
   toolTip.refresh(map.getToolText(y,x));
   wrefresh(mainWindow);
 

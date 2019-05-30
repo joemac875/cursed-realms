@@ -15,8 +15,20 @@ class TileManager;
 class Tile;
 class TerrainTile;
 class PlainsTile;
+class BarrenTile;
 class BuildingTile;
 
+enum BuildingType {BT_None       = 0,
+                   BT_LumberMill = 1,
+                   BT_Farm       = 2,
+                   BT_Road       = 4,
+                   BT_Keep       = 8,
+                   BT_Bridge     = 16,
+                   BT_House      = 32};
+
+inline BuildingType operator|(BuildingType A, BuildingType B){
+  return static_cast<BuildingType>(static_cast<int>(A) | static_cast<int>(B));
+}
 
 // Abstract class for tiles
 
@@ -28,7 +40,7 @@ class Tile
     void setCharacter(chtype target);
     virtual string getToolText();
     void setText(string target);
-    virtual void step() = 0;
+    virtual void step();
     virtual double getHeight() const;
     virtual void setHeight(double target);
     virtual ~Tile();
@@ -50,52 +62,60 @@ class TerrainTile: public Tile
   public:
     TerrainTile(int y, int x);
     int getUsability();
+    bool hasBuilding();
+    BuildingType getAcceptedBuildings();
     chtype render();
+    int isRoute();
     string getToolText();
     virtual void step();
     void setBuilding(BuildingTile * tile);
+
   protected:
     int usability = 0;
+    BuildingType acceptedBuildings;
     BuildingTile * building = nullptr;
 
 };
 
-enum BuildingType {BT_LumberMill = 1,
-                   BT_Farm = 2};
 
-inline BuildingType operator|(BuildingType A, BuildingType B){
-  return static_cast<BuildingType>(static_cast<int>(A) | static_cast<int>(B));
-}
 class BuildingTile: public Tile
 {
   public:
     BuildingTile(int y, int x);
-    static chtype blob();
+    chtype render();
+    virtual void step();
+    virtual int isRoute();
+    virtual bool canAfford();
+    virtual void subtractCosts();
   protected:
     int buildTime = 0;
+    int turnsToBuild =0;
+    int woodCost = 0;
+    int familyCost = 0;
+
 
 };
 ////////////////////////////////////////////////////////
+
+class BarrenTile: public TerrainTile
+{
+  public:
+    BarrenTile(int y, int x);
+};
 class PlainsTile: public TerrainTile
 {
   public:
     PlainsTile(int y, int x);
-
-
 };
 class ForestTile: public TerrainTile
 {
   public:
-
     ForestTile(int y, int x);
-
-
 };
 class RiverTile: public TerrainTile
 {
   public:
     RiverTile(int y, int x);
-
 };
 ////////////////////////////////////////////
 class LumberMill: public BuildingTile
@@ -106,13 +126,48 @@ class LumberMill: public BuildingTile
     string getToolText() ;
     virtual void step();
     void setProduction(int target);
-
   private:
     int production;
-
+};
+class Farm: public BuildingTile
+{
+  public:
+    Farm(int y, int x);
+    int calculateProduction(int acceptedUsage);
+    string getToolText() ;
+    virtual void step();
+    void setProduction(int target);
+  private:
+    int production;
+};
+class Road: public BuildingTile
+{
+  public:
+    Road(int y, int x);
+    int isRoute();
+};
+class Bridge: public BuildingTile
+{
+  public:
+    Bridge(int y, int x);
+    int isRoute();
+};
+class Keep: public BuildingTile
+{
+  public:
+    Keep(int y, int x);
+    string getToolText() ;
+    void step();
+    int isRoute();
+};
+class House: public BuildingTile
+{
+  public:
+    House(int y, int x);
+    void step();
+  private:
 };
 ////////////////////////////////////////////////
-
 class TileManager
 {
   public:
@@ -121,13 +176,14 @@ class TileManager
     void dumpRenders(vector<vector<chtype> > &storage, int y_offset, int x_offset);
     void createRivers(int chunkSize);
     void fillRiver(int y, int x);
+    bool static pathToKeep(int y, int x);
+    bool static pathToKeepHelper(vector<vector<bool> > &visited, int y, int x);
     string getToolText(int y, int x);
-    
     static void create(BuildingType bt, int y, int x);
     static vector<vector<TerrainTile* > > tileVector;
 
   private:
-    vector<double (*)(double, double)> x;
+
     FastNoise noiseGen;
     double baseRiverProb = 3;
 };
