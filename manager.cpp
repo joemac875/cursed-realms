@@ -79,6 +79,9 @@ void Manager::cursorMovement(){
       wmove(mainWindow, y, x+1);
 
       break;
+    case 'e':
+      optionManager.next();
+      break;
     case '1':
       indexChoice = 0;
       break;

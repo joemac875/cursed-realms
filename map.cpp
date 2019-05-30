@@ -26,21 +26,10 @@ void Map::shift(int direction){
 Map::Map(){
 
   terrainManager = TileManager();
-
-
-
   // Randomly pick a starting area in the map
   y_curs_off = (rand() % (MAP_HEIGHT-GAME_HEIGHT - 1)) + 1;
   x_curs_off = rand() % (MAP_WIDTH-GAME_WIDTH);
-  for (int i=y_curs_off; i < GAME_HEIGHT+y_curs_off; i++){
-    for (int j=x_curs_off; j < GAME_WIDTH+x_curs_off; j++){
-      if (TileManager::tileVector[i][j]->getAcceptedBuildings() & BT_Keep){
-        terrainManager.create(BT_Keep, i, j);
-        return;
-      }
-    }
-  }
-
+  
 }
 void Map::dumpRenders(vector<vector<chtype> > &storage){
   terrainManager.dumpRenders(storage, y_curs_off, x_curs_off);

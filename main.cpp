@@ -11,8 +11,9 @@ int main(){
   noecho();
   init_pair(1,COLOR_GREEN,0);
   init_pair(2,COLOR_BLUE,0);
-  init_pair(3,COLOR_YELLOW,0);
+  init_pair(3,COLOR_YELLOW, 0);
   init_pair(4,COLOR_MAGENTA,0);
+  init_pair(5,COLOR_BLACK, COLOR_MAGENTA);
   clear();
   nodelay(stdscr, TRUE);
   Manager gameManager = Manager();

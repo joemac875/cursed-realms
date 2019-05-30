@@ -6,8 +6,8 @@ int ResourceManager::currentFamily;
 int ResourceManager::currentFood;
 int ResourceManager::currentAttrition;
 ResourceManager::ResourceManager(int height, int width, int start_y, int start_x){
-  currentWood = 500;
-  currentFamily = 2;
+  currentWood = 50;
+  currentFamily = 0;
   currentAttrition = currentFamily;
   currentFood = 40;
 

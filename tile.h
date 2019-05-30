@@ -63,6 +63,7 @@ class TerrainTile: public Tile
     TerrainTile(int y, int x);
     int getUsability();
     bool hasBuilding();
+    void removeBuilding();
     BuildingType getAcceptedBuildings();
     chtype render();
     int isRoute();
@@ -122,9 +123,11 @@ class LumberMill: public BuildingTile
 {
   public:
     LumberMill(int y, int x);
+    ~LumberMill();
     int calculateProduction(int acceptedUsage);
     string getToolText() ;
     virtual void step();
+
     void setProduction(int target);
   private:
     int production;
@@ -133,6 +136,7 @@ class Farm: public BuildingTile
 {
   public:
     Farm(int y, int x);
+    ~Farm();
     int calculateProduction(int acceptedUsage);
     string getToolText() ;
     virtual void step();
@@ -164,7 +168,9 @@ class House: public BuildingTile
 {
   public:
     House(int y, int x);
+    ~House();
     void step();
+
   private:
 };
 ////////////////////////////////////////////////
@@ -179,11 +185,12 @@ class TileManager
     bool static pathToKeep(int y, int x);
     bool static pathToKeepHelper(vector<vector<bool> > &visited, int y, int x);
     string getToolText(int y, int x);
-    static void create(BuildingType bt, int y, int x);
+    static void createBuilding(BuildingType bt, int y, int x);
+    static void removeBuilding(int y, int x);
+    static bool canRemoveBuilding(int y, int x);
+    static Keep * keep;
     static vector<vector<TerrainTile* > > tileVector;
-
   private:
-
     FastNoise noiseGen;
     double baseRiverProb = 3;
 };

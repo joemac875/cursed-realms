@@ -1,7 +1,7 @@
 #include "tile.h"
 
 vector<vector<TerrainTile* > > TileManager::tileVector;
-
+Keep * TileManager::keep;
 TileManager::TileManager(){
   noiseGen.SetNoiseType(FastNoise::Simplex);
   noiseGen.SetFrequency(.125);
@@ -39,6 +39,7 @@ TileManager::TileManager(){
 
 }
 bool TileManager::pathToKeep(int y, int x){
+
   vector<bool> visitedRow(MAP_WIDTH, false);
   vector<vector<bool> > visited(MAP_HEIGHT, visitedRow);
 
@@ -166,6 +167,10 @@ TerrainTile::TerrainTile(int y, int x){
   setY(y);
   setX(x);
 }
+void TerrainTile::removeBuilding(){
+  if (hasBuilding()) delete building;
+  building = nullptr;
+}
 int TerrainTile::getUsability(){
   if (!(building == 0)) return 0;
   return usability;
@@ -215,18 +220,18 @@ BarrenTile::BarrenTile(int y, int x) : TerrainTile(y,x){
 }
 PlainsTile::PlainsTile(int y, int x) : TerrainTile(y, x){
   usability = ResourceManager::FOOD;
-  setText("Plains\n----\nA wholly uninspiring terrain tile.");
+  setText("Plains\n----\nPrime for building.");
   acceptedBuildings = BT_LumberMill | BT_Road | BT_Keep | BT_House | BT_Farm;
   setCharacter(' ');
 }
 ForestTile::ForestTile(int y, int x) : TerrainTile(y, x){
   usability = ResourceManager::WOOD;
   acceptedBuildings = BT_None;
-  setText("Forest\n----\nLush trees veil the ultimate resource.");
+  setText("Forest\n----\nLush trees and poison ivy awaits.");
   setCharacter(ACS_DIAMOND | COLOR_PAIR(1));
 }
 RiverTile::RiverTile(int y, int x) : TerrainTile(y, x){
-  setText("River\n----\nDon't get your feet wet!");
+  setText("River\n----\nRushing water.");
   acceptedBuildings = BT_Bridge;
   setCharacter(ACS_CKBOARD | COLOR_PAIR(2));
 }
@@ -260,9 +265,17 @@ chtype BuildingTile::render(){
   }
   return character;
 }
-void TileManager::create(BuildingType bt, int y, int x){
+void TileManager::removeBuilding(int y, int x){
+  tileVector[y][x]->removeBuilding();
+}
+bool TileManager::canRemoveBuilding(int y, int x){
+  if (tileVector[y][x]->hasBuilding()) return true;
+  return false;
+}
+void TileManager::createBuilding(BuildingType bt, int y, int x){
   if (bt == BT_Keep){
-    tileVector[y][x]->setBuilding(new Keep(y, x));
+    keep = new Keep(y,x);
+    tileVector[y][x]->setBuilding(keep);
     return;
   }
   if (!pathToKeep(y,x)) return;
@@ -290,12 +303,15 @@ void TileManager::create(BuildingType bt, int y, int x){
 }
 ////////////
 LumberMill::LumberMill(int y, int x) : BuildingTile(y, x){
-  setText("Lumber Mill\n----\nOwee this makes wood.");
+  setText("Lumber Mill\n----\nProduces wood.");
   setCharacter('L');
   woodCost   = 25;
   familyCost = 1;
   production = 0;
   turnsToBuild = 3;
+}
+LumberMill::~LumberMill(){
+  ResourceManager::currentFamily += 1;
 }
 int LumberMill::calculateProduction(int acceptedUsage){
   int prod = 0;
@@ -312,6 +328,7 @@ int LumberMill::calculateProduction(int acceptedUsage){
 void LumberMill::setProduction(int target){
   production = target;
 }
+
 string LumberMill::getToolText(){
   //for now jsut
   return description + "\nProduction: " + to_string(production);
@@ -325,12 +342,15 @@ void LumberMill::step(){
   ResourceManager::currentWood += production;
 }
 Farm::Farm(int y, int x) : BuildingTile(y, x){
-  setText("Farm\n----\nOwee this makes food.");
+  setText("Farm\n----\nProduces food.");
   setCharacter('F');
   woodCost   = 15;
   familyCost = 1;
   production = 0;
   turnsToBuild = 2;
+}
+Farm::~Farm(){
+  ResourceManager::currentFamily += familyCost;
 }
 int Farm::calculateProduction(int acceptedUsage){
   int prod = 0;
@@ -383,6 +403,10 @@ House::House(int y, int x): BuildingTile(y, x){
   woodCost = 40;
   turnsToBuild = 4;
 }
+House::~House(){
+  ResourceManager::currentFamily -= 1;
+  ResourceManager::currentAttrition -= 1;
+}
 void House::step(){
   if (turnsToBuild > 0){
     turnsToBuild--;
@@ -396,8 +420,10 @@ void House::step(){
 }
 //////
 Keep::Keep(int y, int x) : BuildingTile(y, x){
-  setText("Keep\n----\nBuild off this and connected roads.");
-  setCharacter('H');
+  setText("Keep\n----\nThe epicenter of the colony.");
+  setCharacter('H' | COLOR_PAIR(5));
+  ResourceManager::currentFamily += 2;
+  ResourceManager::currentAttrition += 2;
 }
 string Keep::getToolText(){
   return description;
